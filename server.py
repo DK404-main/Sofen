@@ -54,7 +54,6 @@ def connector_c():
             Server_data.clients += [{"user_id": ID_user, "addr": addr, "connection": connection, "chat_now": [], "chat_list": []}]
             recv_messages_from_client = t.Thread(target=recviving_messages_from_clients, args=[[connection, addr, ID_user, ""]]) #FORM [CONNECTION, addr, ID_user, chat]
             recv_messages_from_client.start()
-            recv_messages_from_client.join()
             Server_data.tracking += [recv_messages_from_client]
 
 
@@ -70,8 +69,9 @@ def recviving_messages_from_clients(data):
                 for chat in Server_data.chats:
                     if chat["chat_id"] == chat_id:
                         message_id = ''.join([*map(str, [randint(0,9) for _ in range(0,10)])])
+                        message_contain = data[0].recv(1024).decode()
                         chat["chat_messages"] += [{"author": id_user,
-                                "message": data[0].recv(1024).decode(),
+                                "message": message_contain,
                                 "is_read": [],
                                 "message_id": message_id}]
                 for message in Server_data.messages:
@@ -96,18 +96,11 @@ def recviving_messages_from_clients(data):
 
                 
 if __name__ == "__main__":
-    connector_clients = t.Thread(target=connector_c) 
-    connector_clients.start()
-    connector_clients.join()
+    connector_clients = t.Thread(target=connector_c)
+    connector_clients.start() 
     print("Connector clients | Working")
     
     load_messages = t.Thread(target=load_messages_from_chat)
     load_messages.start()
-    load_messages.join()
     print("Load message from chat | Starting")
-
-    recv_messages_from_client = t.Thread(target=recviving_messages_from_clients)
-    recv_messages_from_client.start()
-    recv_messages_from_client.join()
-    print("Recv messages from clients | Started")
-
+    connector_c()
