@@ -1,6 +1,8 @@
 # Logs
 ## Sofen is a messenger for communication and wide customization of both the appearance of the application and profile, as well as ways of encrypting data during its transmission.
 
+<h2 align="center"> 25.05.2025 </h2>
+  
 ### The alpha version of the application is under development, below will be posted screenshots from the last months of development
 
 ### Appearance of the client application:
